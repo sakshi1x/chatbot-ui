@@ -123,6 +123,7 @@ export const createFile = async (
   const instance = new PrivategptApiClient({
     environment: "http://localhost:8001"
   })
+
   const r = await instance.ingestion.ingestFile(file)
   console.log(r)
 
@@ -188,6 +189,8 @@ export const createDocXFile = async (
     workspace_id
   })
 
+
+
   const filePath = await uploadFile(file, {
     name: createdFile.name,
     user_id: createdFile.user_id,
@@ -224,6 +227,12 @@ export const createDocXFile = async (
   }
 
   const fetchedFile = await getFileById(createdFile.id)
+  const instance = new PrivategptApiClient({
+    environment: "http://localhost:8001"
+  })
+
+  const r = await instance.ingestion.ingestFile(file)
+  console.log(r)
 
   return fetchedFile
 }
@@ -384,9 +393,10 @@ export const deleteFile = async (fileId: string) => {
 
 
   // console.log(file.data, injestedPgptFiles)
+  await pgptInstance.ingestion.listIngested();
 
 
-  await pgptInstance.ingestion.deleteIngested(fileId)
+  // await pgptInstance.ingestion.deleteIngested(fileId)
 
   if (error) {
     throw new Error(error.message)
@@ -413,7 +423,8 @@ export const deleteFileWorkspace = async (
     environment: "http://localhost:8001"
   })
 
-  await pgptInstance.ingestion.deleteIngested(fileId)
+  // await pgptInstance.ingestion.deleteIngested(fileId)
+  await pgptInstance.ingestion.listIngested();
 
   if (error) throw new Error(error.message)
 
